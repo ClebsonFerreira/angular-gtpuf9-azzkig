@@ -9,6 +9,7 @@ import {
 import { AdNewDirective } from './ad-new.directive';
 import { HeroJobAdComponent } from './hero-job-ad.component';
 import { MdocButtonComponent } from './mdoc-button.component';
+import { MdocDynamicComponent } from './mdoc-dynamic.component';
 import { MdocInputComponent } from './mdoc-input.component';
 import { MdocRadioComponent } from './mdoc-radio.component';
 
@@ -31,7 +32,7 @@ import { MdocRadioComponent } from './mdoc-radio.component';
 })
 export class AdNewComponent {
   @ViewChild(AdNewDirective, { static: true }) adNewHost!: AdNewDirective;
-  components = new Map<string, ComponentRef<any>>();
+  components = new Map<string, ComponentRef<MdocDynamicComponent>>();
 
   AddButtonComponent() {
     const viewContainerRef = this.adNewHost.viewContainerRef;
@@ -39,7 +40,7 @@ export class AdNewComponent {
     const title = `Botao ${Math.floor(Math.random() * 20)}`;
     componentRef.instance.title = title;
     this.components.set(title, componentRef);
-    componentRef.instance.closeEvent.subscribe((event) =>
+    componentRef.instance.close.subscribe((event) =>
       this.deleteComponent(event)
     );
   }
@@ -50,12 +51,19 @@ export class AdNewComponent {
     const title = `Radio ${Math.floor(Math.random() * 20)}`;
     componentRef.instance.title = title;
     this.components.set(title, componentRef);
+    componentRef.instance.close.subscribe((event) =>
+      this.deleteComponent(event)
+    );
   }
   AddInputComponent() {
     const viewContainerRef = this.adNewHost.viewContainerRef;
     const componentRef = viewContainerRef.createComponent(MdocInputComponent);
     const title = `Input ${Math.floor(Math.random() * 20)}`;
+    componentRef.instance.title = title;
     this.components.set(title, componentRef);
+    componentRef.instance.close.subscribe((event) =>
+      this.deleteComponent(event)
+    );
   }
 
   deleteComponent(componentName: string) {
